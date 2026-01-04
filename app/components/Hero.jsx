@@ -59,7 +59,7 @@ export default function Hero() {
         </div>
 
         <div className="hero-image">
-          <img src="/images/hero-sheep.png" alt="Нічник овечка" />
+          <img className="img-hero" src="/images/hero-sheep.png" alt="Нічник овечка" />
         </div>
       </div>
     </section>

@@ -16,7 +16,7 @@ export default function OrderModal() {
   function validate() {
     const e = {};
     if (name.trim().length < 2) e.name = "Введіть імʼя";
-    if (phone.length < 13) e.phone = "Невірний номер";
+    if (phone.trim().length < 10) e.phone = "Невірний номер"; // мінімум 10 цифр
     setErrors(e);
     return Object.keys(e).length === 0;
   }
@@ -63,7 +63,7 @@ export default function OrderModal() {
             onChange={(e) =>
               setPhone(e.target.value.replace(/[^\d+]/g, ""))
             }
-            placeholder="+380 ХХ ХХХ ХХ ХХ"
+            placeholder="Номер телефону"
           />
           <small className="error">{errors.phone}</small>
 
