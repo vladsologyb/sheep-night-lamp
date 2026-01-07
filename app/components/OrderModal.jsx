@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 export default function OrderModal() {
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
+  const [phone, setPhone] = useState("+380");
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
@@ -16,9 +16,29 @@ export default function OrderModal() {
   function validate() {
     const e = {};
     if (name.trim().length < 2) e.name = "Введіть імʼя";
-    if (phone.trim().length < 10) e.phone = "Невірний номер"; // мінімум 10 цифр
+
+    // +380 + 9 цифр = 13 символів
+    if (!/^\+380\d{9}$/.test(phone)) {
+      e.phone = "Введіть коректний номер";
+    }
+
     setErrors(e);
     return Object.keys(e).length === 0;
+  }
+
+  function handlePhoneChange(value) {
+    // залишаємо тільки цифри
+    let digits = value.replace(/\D/g, "");
+
+    // якщо стерли все — повертаємо +380
+    if (!digits.startsWith("380")) {
+      digits = "380";
+    }
+
+    // максимум 12 цифр: 380 + 9
+    digits = digits.slice(0, 12);
+
+    setPhone("+" + digits);
   }
 
   async function submit(e) {
@@ -34,8 +54,13 @@ export default function OrderModal() {
     if (res.ok) {
       setOpen(false);
       setName("");
-      setPhone("");
+      setPhone("+380");
       window.dispatchEvent(new Event("thanks-open"));
+
+      // Meta Pixel Lead
+      if (typeof window !== "undefined" && window.fbq) {
+        window.fbq("track", "Lead");
+      }
     } else {
       alert("Помилка відправки");
     }
@@ -60,10 +85,9 @@ export default function OrderModal() {
 
           <input
             value={phone}
-            onChange={(e) =>
-              setPhone(e.target.value.replace(/[^\d+]/g, ""))
-            }
-            placeholder="Номер телефону"
+            onChange={(e) => handlePhoneChange(e.target.value)}
+            placeholder="+380 ХХ ХХХ ХХ ХХ"
+            inputMode="tel"
           />
           <small className="error">{errors.phone}</small>
 

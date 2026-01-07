@@ -12,12 +12,12 @@ export default function Tech() {
             <p>Безпечно навіть якщо дитина тягне до рота</p>
           </div>
           <div className="card tech">
-            <img src="/images/tech-battery.jpeg" alt="Акумулятор" />
+            <img src="/images/tech-battery.jpg" alt="Акумулятор" />
             <h3>Акумулятор</h3>
             <p>Зарядка через USB, без батарейок</p>
           </div>
           <div className="card tech">
-            <img src="/images/tech-led.png" alt="Безпечне LED-світло" />
+            <img src="/images/tech-led.jpg" alt="Безпечне LED-світло" />
             <h3>Безпечне LED-світло</h3>
             <p>Не нагрівається, можна спати в обіймах</p>
           </div>

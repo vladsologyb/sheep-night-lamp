@@ -1,24 +1,34 @@
 "use client";
 import { useEffect, useState } from "react";
 
+const TWO_DAYS = 48 * 60 * 60 * 1000; // 48 годин
+
 export default function Hero() {
-  const [time, setTime] = useState("");
+  const [time, setTime] = useState("00:00:00");
 
   useEffect(() => {
-    const end = Date.now() + 2 * 60 * 60 * 1000; // 2 години
+    let end = localStorage.getItem("promoEnd");
+
+    // якщо таймера немає або він завершився — ставимо нові 2 дні
+    if (!end || Date.now() > Number(end)) {
+      end = Date.now() + TWO_DAYS;
+      localStorage.setItem("promoEnd", end);
+    }
 
     const timer = setInterval(() => {
-      const diff = end - Date.now();
+      const diff = Number(end) - Date.now();
 
       if (diff <= 0) {
-        setTime("00:00:00");
-        clearInterval(timer);
+        const newEnd = Date.now() + TWO_DAYS;
+        localStorage.setItem("promoEnd", newEnd);
+        end = newEnd;
         return;
       }
 
-      const h = String(Math.floor(diff / 3600000)).padStart(2, "0");
-      const m = String(Math.floor((diff % 3600000) / 60000)).padStart(2, "0");
-      const s = String(Math.floor((diff % 60000) / 1000)).padStart(2, "0");
+      const totalSeconds = Math.floor(diff / 1000);
+      const h = String(Math.floor(totalSeconds / 3600)).padStart(2, "0");
+      const m = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, "0");
+      const s = String(totalSeconds % 60).padStart(2, "0");
 
       setTime(`${h}:${m}:${s}`);
     }, 1000);
@@ -59,7 +69,7 @@ export default function Hero() {
         </div>
 
         <div className="hero-image">
-          <img className="img-hero" src="/images/hero-sheep.png" alt="Нічник овечка" />
+          <img className="img-hero" src="/images/hero-sheep.jpg" alt="Нічник овечка" />
         </div>
       </div>
     </section>
