@@ -15,9 +15,12 @@ export default function OrderModal() {
 
   function validate() {
     const e = {};
-    if (name.trim().length < 2) e.name = "Введіть імʼя";
 
-    // +380 + 9 цифр = 13 символів
+    if (name.trim().length < 2) {
+      e.name = "Введіть імʼя";
+    }
+
+    // +380 + 9 цифр
     if (!/^\+380\d{9}$/.test(phone)) {
       e.phone = "Введіть коректний номер";
     }
@@ -27,17 +30,13 @@ export default function OrderModal() {
   }
 
   function handlePhoneChange(value) {
-    // залишаємо тільки цифри
     let digits = value.replace(/\D/g, "");
 
-    // якщо стерли все — повертаємо +380
     if (!digits.startsWith("380")) {
       digits = "380";
     }
 
-    // максимум 12 цифр: 380 + 9
     digits = digits.slice(0, 12);
-
     setPhone("+" + digits);
   }
 
@@ -45,24 +44,25 @@ export default function OrderModal() {
     e.preventDefault();
     if (!validate()) return;
 
-    const res = await fetch("/api/order", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, phone }),
-    });
+    try {
+      const res = await fetch("/api/order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, phone }),
+      });
 
-    if (res.ok) {
+      if (!res.ok) throw new Error("Request failed");
+
+      // очищаємо форму
       setOpen(false);
       setName("");
       setPhone("+380");
+
+      // 🔔 сигнал успішної заявки
       window.dispatchEvent(new Event("thanks-open"));
 
-      // Meta Pixel Lead
-      if (typeof window !== "undefined" && window.fbq) {
-        window.fbq("track", "Lead");
-      }
-    } else {
-      alert("Помилка відправки");
+    } catch (err) {
+      alert("Помилка відправки. Спробуйте ще раз.");
     }
   }
 
@@ -91,7 +91,9 @@ export default function OrderModal() {
           />
           <small className="error">{errors.phone}</small>
 
-          <button className="cta-btn">Замовити</button>
+          <button type="submit" className="cta-btn">
+            Замовити
+          </button>
         </form>
       </div>
     </div>

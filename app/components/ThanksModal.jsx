@@ -1,13 +1,25 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function ThanksModal() {
   const [open, setOpen] = useState(false);
+  const leadSent = useRef(false); // 🔒 захист від дублювання
 
   useEffect(() => {
     function handleOpen() {
       setOpen(true);
+
+      // 🔥 META LEAD — ТІЛЬКИ 1 РАЗ
+      if (
+        !leadSent.current &&
+        typeof window !== "undefined" &&
+        window.fbq
+      ) {
+        window.fbq("track", "Lead");
+        leadSent.current = true;
+      }
     }
+
     window.addEventListener("thanks-open", handleOpen);
     return () => window.removeEventListener("thanks-open", handleOpen);
   }, []);
@@ -18,7 +30,9 @@ export default function ThanksModal() {
     <div className="thanks-modal active">
       <div className="thanks-content">
         <h2>Дякуємо 💛</h2>
-        <button className="cta-btn" onClick={() => setOpen(false)}>Добре</button>
+        <button className="cta-btn" onClick={() => setOpen(false)}>
+          Добре
+        </button>
       </div>
     </div>
   );
