@@ -46,8 +46,8 @@ export default function Hero() {
           </h1>
 
           <div className="price">
-            <span className="old-price">799 грн</span>
-            <span className="new-price">599 грн</span>
+            <span className="old-price">899 грн</span>
+            <span className="new-price">699 грн</span>
           </div>
 
           <div className="promo-timer">
